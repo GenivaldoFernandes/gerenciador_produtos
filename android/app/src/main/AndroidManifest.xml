@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.gerenciador_produtos_confere">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
    <application
         android:label="gerenciador_produtos_confere"
         android:icon="@mipmap/ic_launcher">
