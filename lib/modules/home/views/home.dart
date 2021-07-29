@@ -11,6 +11,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   var _ListProdutos = [];
   var _filterLista = [];
 
@@ -36,6 +38,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           backgroundColor: HexColor("#1D754F"),
           title: const Text('Gerenciador de Produtos - Confere'),
@@ -49,7 +52,7 @@ class _HomeState extends State<Home> {
                 child: Container(
                   margin: EdgeInsets.only(bottom: 20),
                   child: CustomButtom1(
-                    "Create",
+                    "Criar produto",
                     () {
                       _idProduto = 0;
                       _nome.text = "";
@@ -62,7 +65,7 @@ class _HomeState extends State<Home> {
                       _delete = false;
                       create_update(context);
                     },
-                    width: (MediaQuery.of(context).size.width / 1.5),
+                    width: (MediaQuery.of(context).size.width / 1.2),
                     height: 60,
                   ),
                 ),
@@ -72,7 +75,7 @@ class _HomeState extends State<Home> {
                 child: Container(
                   margin: EdgeInsets.only(bottom: 20),
                   child: CustomButtom1(
-                    "Read",
+                    "Lista de produtos",
                     () async {
                       _create = false;
                       _update = false;
@@ -80,7 +83,7 @@ class _HomeState extends State<Home> {
                       _ListProdutos = await homeBloc.read();
                       listaProdutos(context, _ListProdutos);
                     },
-                    width: (MediaQuery.of(context).size.width / 1.5),
+                    width: (MediaQuery.of(context).size.width / 1.2),
                     height: 60,
                   ),
                 ),
@@ -90,7 +93,7 @@ class _HomeState extends State<Home> {
                 child: Container(
                   margin: EdgeInsets.only(bottom: 20),
                   child: CustomButtom1(
-                    "Update",
+                    "Atualizar produto",
                     () async {
                       _update = true;
                       _create = false;
@@ -98,7 +101,7 @@ class _HomeState extends State<Home> {
                       _ListProdutos = await homeBloc.read();
                       listaProdutos(context, _ListProdutos);
                     },
-                    width: (MediaQuery.of(context).size.width / 1.5),
+                    width: (MediaQuery.of(context).size.width / 1.2),
                     height: 60,
                   ),
                 ),
@@ -108,7 +111,7 @@ class _HomeState extends State<Home> {
                 child: Container(
                   margin: EdgeInsets.only(bottom: 20),
                   child: CustomButtom1(
-                    "Delete",
+                    "Deletar produto",
                     () async {
                       _delete = true;
                       _create = false;
@@ -116,7 +119,27 @@ class _HomeState extends State<Home> {
                       _ListProdutos = await homeBloc.read();
                       listaProdutos(context, _ListProdutos);
                     },
-                    width: (MediaQuery.of(context).size.width / 1.5),
+                    width: (MediaQuery.of(context).size.width / 1.2),
+                    height: 60,
+                  ),
+                ),
+              ),
+
+              Center(
+                child: Container(
+                  margin: EdgeInsets.only(bottom: 20),
+                  child: CustomButtom1(
+                    "Preenchimento automático",
+                        () async {
+                      homeBloc.preenchimentoAltBase();
+                      _scaffoldKey.currentState!.showSnackBar(SnackBar(
+                        content: Text(
+                          'Registros preenchidos automáticamente na base!',
+                        ),
+                        duration: Duration(seconds: 5),
+                      ));
+                    },
+                    width: (MediaQuery.of(context).size.width / 1.2),
                     height: 60,
                   ),
                 ),
@@ -145,7 +168,7 @@ class _HomeState extends State<Home> {
                       BorderRadius.circular(5.0)
                   ),
                   child: Container(
-                    width: MediaQuery.of(context).size.width - 10,
+                    width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height/1.5,
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
@@ -274,7 +297,7 @@ class _HomeState extends State<Home> {
                                       if (_formKey.currentState!.validate()) {
                                         var produto = Produto(
                                           id: _idProduto,
-                                          imagem: "assets/imgs/icon_product.png",
+                                          imagem: "https://cdns.iconmonstr.com/wp-content/assets/preview/2019/240/iconmonstr-product-3.png",
                                           nome: _nome.text,
                                           preco: _preco.numberValue,
                                           precoPromocao: (!_precoPromocao.text.isEmpty) ? _precoPromocao.numberValue : 0,
@@ -285,8 +308,21 @@ class _HomeState extends State<Home> {
                                         if(_create) {
                                           _create = false;
                                           homeBloc.create(produto);
+
+                                          _scaffoldKey.currentState!.showSnackBar(SnackBar(
+                                            content: Text(
+                                              'Produto criado!',
+                                            ),
+                                            duration: Duration(seconds: 5),
+                                          ));
                                         }else if(_update) {
                                           homeBloc.update(produto);
+                                          _scaffoldKey.currentState!.showSnackBar(SnackBar(
+                                            content: Text(
+                                              'Produto atualizado!',
+                                            ),
+                                            duration: Duration(seconds: 5),
+                                          ));
                                         }
                                         Navigator.of(context).pop();
 
@@ -396,7 +432,7 @@ class _HomeState extends State<Home> {
                                         children: <Widget>[
                                           Container(
                                             width: 50,
-                                            child: Image.asset(
+                                            child: Image.network(
                                               _filterLista[index].imagem
                                             ),
                                           ),
@@ -515,6 +551,13 @@ class _HomeState extends State<Home> {
                                       // Mostrando lista de produtos
                                       _ListProdutos = await homeBloc.read();
                                       listaProdutos(context, _ListProdutos);
+
+                                      _scaffoldKey.currentState!.showSnackBar(SnackBar(
+                                        content: Text(
+                                          'Produto excluído!',
+                                        ),
+                                        duration: Duration(seconds: 5),
+                                      ));
                                     },
                                     width: (MediaQuery.of(context).size.width / 3),
                                     height: 50,
