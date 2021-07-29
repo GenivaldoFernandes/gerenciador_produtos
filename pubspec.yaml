@@ -1,5 +1,5 @@
 name: gerenciador_produtos_confere
-description: Gerenciador de produtos da confere.
+description: Gerenciador de produtos.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.

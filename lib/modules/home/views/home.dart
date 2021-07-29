@@ -3,7 +3,7 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:gerenciador_produtos_confere/custom/colorClass.dart';
 import 'package:gerenciador_produtos_confere/custom/customBottom1.dart';
 import 'package:gerenciador_produtos_confere/models/Produto.dart';
-import 'package:gerenciador_produtos_confere/modules/home/bloC/home_bloc.dart';
+import 'package:gerenciador_produtos_confere/modules/home/blocs/home_bloc.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -180,7 +180,7 @@ class _HomeState extends State<Home> {
                                 decoration: const InputDecoration(
                                   icon: const Icon(Icons.drive_file_rename_outline),
                                   hintText: 'Digite o nome',
-                                  labelText: 'Nome',
+                                  labelText: 'Nome (Obrigatório)',
                                 ),
                                 validator: (value) {
                                   if (value!.isEmpty) {
@@ -196,7 +196,7 @@ class _HomeState extends State<Home> {
                                 decoration: const InputDecoration(
                                   icon: const Icon(Icons.monetization_on),
                                   hintText: 'Digite o preço',
-                                  labelText: 'Preço',
+                                  labelText: 'Preço (Obrigatório)',
                                 ),
                                 validator: (value) {
                                   if (value!.isEmpty) {
@@ -212,7 +212,7 @@ class _HomeState extends State<Home> {
                                 decoration: const InputDecoration(
                                   icon: const Icon(Icons.monetization_on),
                                   hintText: 'Digite o preço de promoção',
-                                  labelText: 'Preço promocional',
+                                  labelText: 'Preço promocional (Opcional)',
                                 ),
                               ),
                               TextFormField(
@@ -222,12 +222,12 @@ class _HomeState extends State<Home> {
                                 decoration: const InputDecoration(
                                   icon: const Icon(Icons.assessment),
                                   hintText: 'Digite o percentual de desconto',
-                                  labelText: 'Percentual de desconto',
+                                  labelText: 'Percentual de desconto (Opcional)',
                                 ),
                               ),
 
                               Container(
-                                margin: EdgeInsets.only(top: 10),
+                                margin: EdgeInsets.only(top: 10, left: 5),
                                 child: Row(
                                   children: [
                                     Text(
@@ -236,7 +236,7 @@ class _HomeState extends State<Home> {
                                     ),
                                     Checkbox(
                                       checkColor: Colors.greenAccent,
-                                      activeColor: Colors.red,
+                                      activeColor: Colors.blueAccent,
                                       value: _disponivelVenda,
                                       onChanged: (_create || _update) ? (bool? value) {
                                         setState(() {
@@ -258,8 +258,8 @@ class _HomeState extends State<Home> {
                                       size: 30.0,
                                     ),
                                     onPressed: () {
-                                      confirmDelete(context);
                                       Navigator.of(context).pop();
+                                      confirmDelete(context);
                                     },
                                   ),
                               ) : Container(),
@@ -274,10 +274,10 @@ class _HomeState extends State<Home> {
                                       if (_formKey.currentState!.validate()) {
                                         var produto = Produto(
                                           id: _idProduto,
-                                          imagem: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/TUCPamplona10.svg/500px-TUCPamplona10.svg.png",
+                                          imagem: "assets/imgs/icon_product.png",
                                           nome: _nome.text,
-                                          preco: double.parse(_preco.text),
-                                          precoPromocao: (!_precoPromocao.text.isEmpty) ? double.parse(_precoPromocao.text) : 0,
+                                          preco: _preco.numberValue,
+                                          precoPromocao: (!_precoPromocao.text.isEmpty) ? _precoPromocao.numberValue : 0,
                                           percentualDesconto: (!_percentualDesconto.text.isEmpty) ? double.parse(_percentualDesconto.text) : 0,
                                           disponivelVenda: (_disponivelVenda) ? 1 : 0
                                         );
@@ -396,7 +396,7 @@ class _HomeState extends State<Home> {
                                         children: <Widget>[
                                           Container(
                                             width: 50,
-                                            child: Image.network(
+                                            child: Image.asset(
                                               _filterLista[index].imagem
                                             ),
                                           ),
